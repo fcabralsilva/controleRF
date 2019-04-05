@@ -54,8 +54,8 @@ void loop()
 	ArduinoOTA.handle();
 	while (COUNT_LER_JSON < 1)
   { 
-    //StaticJsonDocument<700> doc;
-    json = lerArquivo(LISTA_CONTROLES).c_str();
+    StaticJsonDocument<700> doc;
+    const char *json = lerArquivo("LISTA_CONTROLES.txt").c_str();
     DeserializationError error = deserializeJson(doc, json);
     JsonObject root = doc.as<JsonObject>();
 		CONTROLE_1      = root["CONTROLE_1"];
@@ -74,14 +74,14 @@ void loop()
   }
   if (mySwitch.available()) 
 	{
-    //output(mySwitch.getReceivedValue(), mySwitch.getReceivedBitlength(), mySwitch.getReceivedDelay(), mySwitch.getReceivedRawdata(),mySwitch.getReceivedProtocol());
-    CHAVE_BIN_CONTROLE = binario(mySwitch.getReceivedValue(), mySwitch.getReceicedBitlength());
+    output(mySwitch.getReceivedValue(), mySwitch.getReceivedBitlength(), mySwitch.getReceivedDelay(), mySwitch.getReceivedRawdata(),mySwitch.getReceivedProtocol());
+    CHAVE_BIN_CONTROLE = binario(mySwitch.getReceivedValue(),  mySwitch.getReceivedBitlength());
 		mySwitch.resetAvailable();
   }
 	if(BT_GRAVA_CONTROL == true)
 	{
-		gravarArquivo("{\"CONTROLE_1\":\""+CHAVE_BIN_CONTROLE+"\",}", "LISTA_CONTROLES.txt");
-		gravarArquivo(CHAVE_BIN_CONTROLE, CHAVE_BIN_CONTROLE+".txt");
+		//gravarArquivo("{\"CONTROLE_1\":\""+CHAVE_BIN_CONTROLE+"\",}", "LISTA_CONTROLES.txt");
+		//gravarArquivo(CHAVE_BIN_CONTROLE, CHAVE_BIN_CONTROLE+".txt");
 		
 	}
 }

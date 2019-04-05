@@ -30,8 +30,12 @@ void output(unsigned long decimal, unsigned int length, unsigned int delay, unsi
 const char* binario(unsigned long decimal, unsigned int length) {
 
   const char* bin = dec2binWzerofill(decimal, length);
+  String ID_CONTROLE = String(bin).substring(0, 19);
+  String ID_CONTROLE_BOTAO = String(bin).substring(20, 26);
   Serial.print("Binary: ");
-  Serial.println( b );
+  Serial.println( bin );
+  Serial.println( ID_CONTROLE );
+  Serial.println( ID_CONTROLE_BOTAO );
 	return bin;
 } 
 

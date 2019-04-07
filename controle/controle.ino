@@ -6,10 +6,13 @@
 
 #define RF_RECEPTOR 			13
 #define BT_GRAVA_CONTROL 	35
-#define LED_PROCESSO 			13
+#define LED_PROCESSO 			2
 
-const char* CHAVE_BIN_CONTROLE, *CONTROLE_1, *CONTROLE_2, *CONTROLE_3, *CONTROLE_4, *CONTROLE_5, *CONTROLE_6;
-int COUNT_LER_JSON = 0;
+int COUNT_LER_JSON = 0, V_DECIMAL, V_DEC_RETORNO = 0;
+int DISPOSITIVO_RF[60][4];
+const char* LISTA_DISP_RF[] = {"1","2","3"};
+const char* CONTROLES ="{\"1\":[121212,232323,121212,232323],\"2\":[454545,545454,414141,252525],\"3\":[363636,474747,959595,616161]}";
+
 
 RCSwitch mySwitch = RCSwitch();
 
@@ -45,43 +48,34 @@ void setup()
       else if (error == OTA_END_ERROR) Serial.println("End Failed");
     });
   ArduinoOTA.begin();
-	
-  Serial.println("INICIADO");
+	Serial.println();
+  Serial.println("****** SISTEMA INICIADO******");
+  Serial.println();
+  /*  
+    FUNÇÃO CONTROLES E BOTOES RF
+  */
+  arq_jason();
 }
 
 void loop() 
 {
 	ArduinoOTA.handle();
-	while (COUNT_LER_JSON < 1)
-  { 
-    StaticJsonDocument<700> doc;
-    const char *json = lerArquivo("LISTA_CONTROLES.txt").c_str();
-    DeserializationError error = deserializeJson(doc, json);
-    JsonObject root = doc.as<JsonObject>();
-		CONTROLE_1      = root["CONTROLE_1"];
-		Serial.println("Controle 1: "+String(CONTROLE_1));
-		CONTROLE_2      = root["CONTROLE_2"];
-		Serial.println("Controle 2: "+String(CONTROLE_2));
-		CONTROLE_3      = root["CONTROLE_3"];
-		Serial.println("Controle 3: "+String(CONTROLE_3));
-		CONTROLE_4      = root["CONTROLE_4"];
-		Serial.println("Controle 4: "+String(CONTROLE_4));
-		CONTROLE_5      = root["CONTROLE_5"];
-		Serial.println("Controle 5: "+String(CONTROLE_5));
-		CONTROLE_6      = root["CONTROLE_6"];
-		Serial.println("Controle 6: "+String(CONTROLE_6));
-    COUNT_LER_JSON++;
-  }
   if (mySwitch.available()) 
 	{
-    output(mySwitch.getReceivedValue(), mySwitch.getReceivedBitlength(), mySwitch.getReceivedDelay(), mySwitch.getReceivedRawdata(),mySwitch.getReceivedProtocol());
-    CHAVE_BIN_CONTROLE = binario(mySwitch.getReceivedValue(),  mySwitch.getReceivedBitlength());
+    //output(mySwitch.getReceivedValue(), mySwitch.getReceivedBitlength(), mySwitch.getReceivedDelay(), mySwitch.getReceivedRawdata(),mySwitch.getReceivedProtocol());
+    //CHAVE_BIN_CONTROLE = binario(mySwitch.getReceivedValue(),  mySwitch.getReceivedBitlength());
+
+    V_DECIMAL = mySwitch.getReceivedValue();  
+    if(V_DEC_RETORNO != V_DECIMAL)
+    {  
+      Serial.println(V_DECIMAL);
+      V_DEC_RETORNO = V_DECIMAL;
+    }
 		mySwitch.resetAvailable();
   }
+  
 	if(BT_GRAVA_CONTROL == true)
 	{
-		//gravarArquivo("{\"CONTROLE_1\":\""+CHAVE_BIN_CONTROLE+"\",}", "LISTA_CONTROLES.txt");
-		//gravarArquivo(CHAVE_BIN_CONTROLE, CHAVE_BIN_CONTROLE+".txt");
-		
+				
 	}
 }

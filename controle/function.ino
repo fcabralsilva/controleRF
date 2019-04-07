@@ -1,120 +1,27 @@
-//boolean portaIO(int entrada, int rele, const char* tipo,const char* modelo,char contador, boolean estado){
-//  String s_tipo_1 = String(tipo);
-//  String s_modelo_1 = String(modelo);
-//  estado_antes = estado;
-//  if (s_modelo_1 == "pulso")
-//  {
-//    if (digitalRead(entrada) == s_tipo_1.toInt())
-//    {
-//      if (nContar == 0)Serial.println(" Entrada "+String(entrada)+" - Modo pulso... ");
-//      while ((digitalRead(entrada) == s_tipo_1.toInt()) && (nContar <= 100) )
-//      {
-//        if (millis() >= tempo + paramTempo)
-//        {
-//          contador++;
-//          nContar++;
-//          Serial.print(contador, DEC);
-//          tempo = millis();
-//        }
-//      }
-//	  if( estado_antes == true) 
-//			{
-//				estado_atual = false;
-//			}else if( estado_antes == false) 
-//			{
-//				estado_atual = true;
-//			}
-//    }
-//  } else if (s_modelo_1 == "interruptor")
-//  {
-//    estado_atual = digitalRead(entrada);
-//    if (estado_atual != estado_antes )
-//    {
-//      if (nContar == 0)Serial.println(" Entrada "+String(entrada)+" - Modo interruptor... ");
-//      contador = 3;
-//    }
-//  }else if(s_modelo_1 == "pir")
-//	{
-//    estado_atual = digitalRead(entrada);
-//    if (estado_atual)
-//    {
-//      if (nContar == 0)Serial.println(" Entrada "+String(entrada)+" - Sensor Presença... ");
-//    }
-//	}
-//  if ((contador >= 2) && (contador <= 9))
-//  {
-//    if (nContar >= 100)
-//    {
-//			if(n == 0)
-//    {
-//      for(int i = 0; i <=0 ;i++ )
-//      {
-//        String ERRO_ENTRADA = hora_rtc + " - ERRO 0107 - Interruptor Porta IN: "+String(rele)+" Porta OUT: "+String(entrada)+" esta com erro de execução, deve usar a pagina para reiniciar";
-//        if ((nivel_log >= 1) || (logtxt == "sim")) gravarArquivo( ERRO_ENTRADA, "log.txt");
-//        n = 1;
-//      }
-//    }
-//  } else
-//    {
-//	String ERRO_ENTRADA = "0";
-//	nContar = 0;
-//	estado_antes = estado_atual;
-//	if (estado_antes == false) {
-//		Serial.println(" Ligando Porta "+String(entrada)+" : " + String(rele));
-//		contador = 0;
-//		acionaPorta(rele, "", "liga");
-//	} else {
-//		Serial.println(" Desligar Porta "+String(entrada)+" : " + String(rele));
-//		acionaPorta(rele, "", "desl");
-//		contador = 0;
-//      }
-//    }
-//  }
-//  return estado_antes;
-//
-//}
-//void pisca_led(int LED,boolean estado)
-//{
-//  if(estado == true)
-//  {
-//    if (millis() - milis > interval) 
-//    {
-//      milis = millis();
-//      digitalWrite(LED, !digitalRead(LED));
-//    }
-//  }else
-//    {
-//      digitalWrite(LED_AZUL, LOW);
-//      digitalWrite(LED_VERDE, LOW);
-//      digitalWrite(LED_VERMELHO, LOW);
-//    }
-//}
-//void ////gravaLog(String mensagem, String permissao, int nivel)
-//{
-//	//Serial.println(mensagem);
-//	for(int i = 0; i <=0 ;i++ )
-//	{
-//		if (permissao == "sim")
-//		{
-//			if( String(nivel) <= String(nivelLog))
-//			{
-//				gravarArquivo(mensagem, "log.txt");
-//			} 
-//		}
-//	}
-//}
-//
-//String selectedHTNL(const char* tipo, String comp )
-//{
-//	String select;
-//	String s_tipo = String(tipo);
-//	String s_comp = String(comp);
-//	if (s_tipo == comp) {
-//		return select = "selected";
-//	} else {
-//		return select = "";
-//	}
-//}
+int arq_jason()
+{
+  StaticJsonDocument<700> DOC;
+  DeserializationError ERR =  deserializeJson (DOC,CONTROLES);
+  if(ERR)
+  {
+     Serial.print("ERROR: ");
+     Serial.print(ERR.c_str());
+  }
+  JsonObject BOTOES = DOC.as<JsonObject>();
+  int c;
+  while(c < sizeof(LISTA_DISP_RF)/4 )
+  {
+    Serial.print("CONTROLE: "+String(c)); 
+    for(int i=0; i < 4; i++)
+      {
+        DISPOSITIVO_RF[c][i]= BOTOES[LISTA_DISP_RF[c]][i];
+        Serial.print(" BOTÃO: "+String(DISPOSITIVO_RF[c][i]));
+      }
+    Serial.println(); 
+    c++;
+  }
+}
+
 String quebraString(String txtMsg,String string)
 { 
 	unsigned int tamanho 	= txtMsg.length();

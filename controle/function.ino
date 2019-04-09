@@ -15,9 +15,9 @@ int arq_jason()
     for(int i=0; i < 4; i++)
       {
         DISPOSITIVO_RF[c][i]= BOTOES[LISTA_DISP_RF[c]][i];
-        Serial.print(" BOTÃO: "+String(DISPOSITIVO_RF[c][i]));
+        Serial.print(" BOTÃƒO: "+String(DISPOSITIVO_RF[c][i]));
       }
-    Serial.println(); 
+    Serial.println(----------------------------------); 
     c++;
   }
 }
@@ -32,7 +32,7 @@ String quebraString(String txtMsg,String string)
 	return resultado;
 } 
 //---------------------------------------  
-//    FUNÇÃO PARA ACIONAMENTO DE PORTAS 
+//    FUNÃ‡ÃƒO PARA ACIONAMENTO DE PORTAS 
 //    GPIO
 //---------------------------------------  
 //void acionaPorta(int numeroF, String portaF, String acaoF) {
@@ -76,13 +76,13 @@ String quebraString(String txtMsg,String string)
 //}
 //
 ////---------------------------------------  
-////    FUNÇÃO PARA GRAVAR NO BANCO
+////    FUNÃ‡ÃƒO PARA GRAVAR NO BANCO
 ////---------------------------------------  
 //void gravarBanco (String buffer){
 //	WiFiClient client = server.available();
 //	if(WiFi.status() != WL_CONNECTED)
 //	{
-//		////gravaLog(" "+hora_ntp + " - ERRO 0105 - Não foi possivel conectar ao servidor WEB ou banco de dados, reiniciando a central!", logtxt, 1);
+//		////gravaLog(" "+hora_ntp + " - ERRO 0105 - NÃ£o foi possivel conectar ao servidor WEB ou banco de dados, reiniciando a central!", logtxt, 1);
 //		WiFi.reconnect();
 //		if(WiFi.status() != WL_CONNECTED){
 //			pisca_led(LED_VERDE,false);
@@ -111,7 +111,7 @@ String quebraString(String txtMsg,String string)
 //
 //
 ////---------------------------------------  
-////    FUNÇÃO DA SIRENE
+////    FUNÃ‡ÃƒO DA SIRENE
 ////--------------------------------------- 
 //void sirene(boolean valor){
 //	if(valor == true){
@@ -130,17 +130,17 @@ String quebraString(String txtMsg,String string)
 //
 //
 ////---------------------------------------  
-////    FUNÇOES DO MQ / SENSOR DE GAS
+////    FUNÃ‡OES DO MQ / SENSOR DE GAS
 ////---------------------------------------  
 //void calibrarSensor()
 //{
 //	//CALIBRACAO INCIAL DO SENSOR DE GAS
-//	Serial.print(" Caligrando sensor de gás");                
+//	Serial.print(" Caligrando sensor de gÃ¡s");                
 //	Ro = MQCalibration(PIN_MQ2);                                      
 //	Serial.println("\n Calibrado com sucesso - 'Ro' = "+String(Ro)+" kohm"); 
 //}
 //
-//float calcularResistencia(int tensao)   //funcao que recebe o tensao (dado cru) e calcula a resistencia efetuada pelo sensor. O sensor e a resistência de carga forma um divisor de tensão. 
+//float calcularResistencia(int tensao)   //funcao que recebe o tensao (dado cru) e calcula a resistencia efetuada pelo sensor. O sensor e a resistÃªncia de carga forma um divisor de tensÃ£o. 
 //{
 //	return (((float)VRL_VALOR*(4095-tensao)/tensao));
 //}
@@ -187,14 +187,14 @@ String quebraString(String txtMsg,String string)
 //
 //	return 0;
 //}
-//int  calculaGasPPM(float rs_ro, float *pcurve) //Rs/R0 é fornecido para calcular a concentracao em PPM do gas em questao. O calculo eh em potencia de 10 para sair da logaritmica
+//int  calculaGasPPM(float rs_ro, float *pcurve) //Rs/R0 Ã© fornecido para calcular a concentracao em PPM do gas em questao. O calculo eh em potencia de 10 para sair da logaritmica
 //{
 //	return (pow(10,( ((log(rs_ro)-pcurve[1])/pcurve[2]) + pcurve[0])));
 //}
 ////---------------------------------------  
 //
 //---------------------------------------
-//    FUNÇÃO DE MANIPULAÇÃO DE ARQUIVOS  
+//    FUNÃ‡ÃƒO DE MANIPULAÃ‡ÃƒO DE ARQUIVOS  
 //---------------------------------------  
 void formatFS(){
 	SPIFFS.format();
@@ -202,13 +202,13 @@ void formatFS(){
 
 void criarArquivo(){
 	File wFile;
-	//Cria o arquivo se ele não existir
+	//Cria o arquivo se ele nÃ£o existir
 	if(SPIFFS.exists("/log.txt")){
 		Serial.println(" Arquivo log.txt ja existe!");
 	} else {
 		Serial.println(" Criando o arquivo log.txt...");
 		wFile = SPIFFS.open("/log.txt","w+");
-		//Verifica a criação do arquivo
+		//Verifica a criaÃ§Ã£o do arquivo
 		if(!wFile){
 		} else {
 			Serial.println(" Arquivo log.txt criado com sucesso!");
@@ -219,7 +219,7 @@ void criarArquivo(){
 	} else {
 		Serial.println(" Criando o arquivo 'param.txt'...");
 		wFile = SPIFFS.open("/param.txt","w+");
-		//Verifica a criação do arquivo
+		//Verifica a criaÃ§Ã£o do arquivo
 		if(!wFile){
 			////gravaLog(" "+hora_ntp + " - ERRO 0109 - Erro ao criar arquivo 'param.txt'", logtxt, 1);
 		} else {
@@ -237,7 +237,7 @@ void deletarArquivo(String arquivo) {
 	}
 }
 void gravarArquivo(String msg, String arq) {
-	//Abre o arquivo para adição (append)
+	//Abre o arquivo para adiÃ§Ã£o (append)
 	//Inclue sempre a escrita na ultima linha do arquivo
 	if(arq == "log.txt")
 	{
@@ -315,29 +315,29 @@ void openFS(){
 ////callback que indica que o ESP entrou no modo AP
 //void configModeCallback (WiFiManager *myWiFiManager) {  
 //	//  Serial.println("Entered config mode");
-//	Serial.println(" Entrou no modo de configuração ");
+//	Serial.println(" Entrou no modo de configuraÃ§Ã£o ");
 //	Serial.println(WiFi.softAPIP()); //imprime o IP do AP
 //	Serial.println(myWiFiManager->getConfigPortalSSID()); //imprime o SSID criado da rede
 //
 //}
 //
-////callback que indica que salvamos uma nova rede para se conectar (modo estação)
+////callback que indica que salvamos uma nova rede para se conectar (modo estaÃ§Ã£o)
 //void saveConfigCallback () {
 //	//  Serial.println("Should save config");
-//	Serial.println(" Configuração salva ");
+//	Serial.println(" ConfiguraÃ§Ã£o salva ");
 //	Serial.println(WiFi.softAPIP()); //imprime o IP do AP
 //}
 //
 //void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
-//	Serial.printf("Listando Diretórios: %s\r\n", dirname);
+//	Serial.printf("Listando DiretÃ³rios: %s\r\n", dirname);
 //
 //	File root = fs.open(dirname);
 //	if(!root){
-//		Serial.println("- Falha ao abrir diretório");
+//		Serial.println("- Falha ao abrir diretÃ³rio");
 //		return;
 //	}
 //	if(!root.isDirectory()){
-//		Serial.println(" - Diretório não encontrado");
+//		Serial.println(" - DiretÃ³rio nÃ£o encontrado");
 //		return;
 //	}
 //

@@ -31,31 +31,32 @@ String quebraString(String txtMsg,String string)
 	//Serial.println(resultado);
 	return resultado;
 } 
-//---------------------------------------  
-//    FUNÃ‡ÃƒO PARA ACIONAMENTO DE PORTAS 
-//    GPIO
-//---------------------------------------  
-//void acionaPorta(int numeroF, String portaF, String acaoF) {
-//	////gravaLog(" "+hora_ntp + " - Comando:"+String(numeroF)+"/"+acaoF, logtxt, 4);
-//	if (acaoF == "liga") {
-//		digitalWrite(numeroF, HIGH );
-//		linha = "porta="+String(numeroF)+"&acao=liga&central="+ipLocalString;
-//		gravarBanco(linha);
-//		linha = "";
-//	}else if (acaoF == "desl") {
-//		digitalWrite(numeroF, LOW);
-//		linha = "porta="+String(numeroF)+"&acao=desliga&central="+ipLocalString;
-//		gravarBanco(linha);
-//		linha = "";
-//	}else if (acaoF == "puls"){
-//		linha = "porta="+String(numeroF)+"&acao=pulso&central="+ipLocalString;
-//		gravarBanco(linha);
-//		digitalWrite(numeroF, HIGH);
-//		delay(1000);
-//		digitalWrite(numeroF, LOW);
-//		linha = "";
-//	}
-//}
+/* ---------------------------------------  
+   FUNÃ‡ÃƒO PARA ACIONAMENTO DE PORTAS 
+   GPIO
+---------------------------------------   */
+void aciona_Porta(int NUMERO, String ACAO) {
+	//gravaLog(" "+hora_ntp + " - Comando:"+String(NUMERO)+"/"+ACAO, logtxt, 4);
+	String BUF;
+	if (ACAO == "liga") {
+		digitalWrite(NUMERO, HIGH );
+		BUF = "porta="+String(NUMERO)+"&acao=liga&central="+ipLocalString;
+		//gravarBanco(BUF);
+		BUF = "";
+	}else if (ACAO == "desl") {
+		digitalWrite(NUMERO, LOW);
+		BUF = "porta="+String(NUMERO)+"&acao=desliga&central="+ipLocalString;
+		//gravarBanco(BUF);
+		BUF = "";
+	}else if (ACAO == "puls"){
+		BUF = "porta="+String(NUMERO)+"&acao=pulso&central="+ipLocalString;
+		//gravarBanco(BUF);
+		digitalWrite(NUMERO, HIGH);
+		delay(1000);
+		digitalWrite(NUMERO, LOW);
+		BUF = "";
+	}
+} 
 //String teste_conexao(){
 //	WiFiClient client = server.available();
 //	if(millis() >= time3+time3Param)

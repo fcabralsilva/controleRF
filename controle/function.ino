@@ -17,7 +17,7 @@ int arq_jason()
         DISPOSITIVO_RF[c][i]= BOTOES[LISTA_DISP_RF[c]][i];
         Serial.print(" BOTÃƒO: "+String(DISPOSITIVO_RF[c][i]));
       }
-    Serial.println(----------------------------------); 
+    Serial.println("----------------------------------"); 
     c++;
   }
 }
@@ -40,16 +40,16 @@ void aciona_Porta(int NUMERO, String ACAO) {
 	String BUF;
 	if (ACAO == "liga") {
 		digitalWrite(NUMERO, HIGH );
-		BUF = "porta="+String(NUMERO)+"&acao=liga&central="+ipLocalString;
+		//BUF = "porta="+String(NUMERO)+"&acao=liga&central="+ipLocalString;
 		//gravarBanco(BUF);
 		BUF = "";
 	}else if (ACAO == "desl") {
 		digitalWrite(NUMERO, LOW);
-		BUF = "porta="+String(NUMERO)+"&acao=desliga&central="+ipLocalString;
+		//BUF = "porta="+String(NUMERO)+"&acao=desliga&central="+ipLocalString;
 		//gravarBanco(BUF);
 		BUF = "";
 	}else if (ACAO == "puls"){
-		BUF = "porta="+String(NUMERO)+"&acao=pulso&central="+ipLocalString;
+		//BUF = "porta="+String(NUMERO)+"&acao=pulso&central="+ipLocalString;
 		//gravarBanco(BUF);
 		digitalWrite(NUMERO, HIGH);
 		delay(1000);

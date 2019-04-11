@@ -1,0 +1,8 @@
+SPIFFSFS	KEYWORD1
+begin	KEYWORD2
+format	KEYWORD2
+totalBytes	KEYWORD2
+usedBytes	KEYWORD2
+end	KEYWORD2
+exists	KEYWORD2
+onProgress	KEYWORD2

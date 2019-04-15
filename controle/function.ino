@@ -9,17 +9,20 @@ int arq_jason()
   }
   JsonObject BOTOES = DOC.as<JsonObject>();
   int c;
+  int cc;
   while(c < sizeof(LISTA_DISP_RF)/4 )
   {
-    Serial.print("CONTROLE: "+String(c)); 
+    Serial.println("CONTROLE: "+String(c)); 
     for(int i=0; i < 4; i++)
       {
-        DISPOSITIVO_RF[c][i]= BOTOES[LISTA_DISP_RF[c]][i];
-        Serial.print(" BOTÃƒO: "+String(DISPOSITIVO_RF[c][i]));
+        DISPOSITIVO_RF[cc]= BOTOES[LISTA_DISP_RF[c]][i];
+        Serial.print(" BOTAO: "+String(DISPOSITIVO_RF[cc]));
+        cc++;
       }
-    Serial.println("----------------------------------"); 
+     Serial.println();
     c++;
   }
+  Serial.println();
 }
 
 String quebraString(String txtMsg,String string)

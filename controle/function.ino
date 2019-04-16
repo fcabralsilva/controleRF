@@ -24,6 +24,57 @@ int arq_jason()
   }
   Serial.println();
 }
+void ota_update_remote(){
+	ArduinoOTA
+	.onStart([]() {
+		String type;
+		if (ArduinoOTA.getCommand() == U_FLASH)
+		type = "sketch";
+		else // U_SPIFFS
+		type = "filesystem";
+
+		// NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
+		Serial.println("Start updating " + type);
+	})
+	.onEnd([]() {
+		Serial.println("\nEnd");
+	})
+	.onProgress([](unsigned int progress, unsigned int total) {
+		Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+	})
+	.onError([](ota_error_t error) {
+		Serial.printf("Error[%u]: ", error);
+		if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
+		else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
+		else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
+		else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
+		else if (error == OTA_END_ERROR) Serial.println("End Failed");
+	});
+	ArduinoOTA.begin();
+}
+
+int search_Array(int ARRAY[], int VALOR)
+{
+  int POSICAO;
+  int i = 0;
+  int x = 0;
+  Serial.println(" # Verificando se controle esta cadastrado na central");
+  while((DISPOSITIVO_RF[i] != NULL) && (x == 0)) 
+  {
+    if (DISPOSITIVO_RF[i] == VALOR)
+    {
+      POSICAO = i;
+      Serial.println(" # Achou o botão "+String(VALOR)+" na posição: "+String(POSICAO));
+      x = 1;
+      }else
+      {
+        i++;
+        POSICAO = NULL;
+      }
+    
+  }
+  return POSICAO;
+}
 
 String quebraString(String txtMsg,String string)
 { 
@@ -112,91 +163,6 @@ void aciona_Porta(int NUMERO, String ACAO) {
 //	client.stop();
 //}
 ////---------------------------------------  
-//
-//
-////---------------------------------------  
-////    FUNÃ‡ÃƒO DA SIRENE
-////--------------------------------------- 
-//void sirene(boolean valor){
-//	if(valor == true){
-//		ledcWriteTone(channel, 2000);
-//		delay(400);
-//		ledcWriteTone(channel, 1800);
-//		delay(400);
-//		ledcWriteTone(channel, 1000);
-//		delay(300);
-//		
-//	}else{
-//		ledcWriteTone(channel, 0);
-//	}
-//}
-////---------------------------------------  
-//
-//
-////---------------------------------------  
-////    FUNÃ‡OES DO MQ / SENSOR DE GAS
-////---------------------------------------  
-//void calibrarSensor()
-//{
-//	//CALIBRACAO INCIAL DO SENSOR DE GAS
-//	Serial.print(" Caligrando sensor de gÃ¡s");                
-//	Ro = MQCalibration(PIN_MQ2);                                      
-//	Serial.println("\n Calibrado com sucesso - 'Ro' = "+String(Ro)+" kohm"); 
-//}
-//
-//float calcularResistencia(int tensao)   //funcao que recebe o tensao (dado cru) e calcula a resistencia efetuada pelo sensor. O sensor e a resistÃªncia de carga forma um divisor de tensÃ£o. 
-//{
-//	return (((float)VRL_VALOR*(4095-tensao)/tensao));
-//}
-//
-//float MQCalibration(int mq_pin)   //funcao que calibra o sensor em um ambiente limpo utilizando a resistencia do sensor em ar limpo 9.83
-//{
-//	int i;
-//	float valor=0;
-//	pisca_led(LED_VERDE,false);
-//	for (i=0;i<ITERACOES_CALIBRACAO;i++) {    //sao adquiridas diversas amostras e calculada a media para diminuir o efeito de possiveis oscilacoes durante a calibracao
-//		Serial.print(".");
-//		valor += calcularResistencia(analogRead(mq_pin));
-//		delay(500);
-//		digitalWrite(LED_AZUL, !digitalRead(LED_AZUL));//Faz o LED piscar (inverte o estado).
-//	}
-//	digitalWrite(LED_AZUL,false);
-//	valor = valor/ITERACOES_CALIBRACAO;        
-//	valor = valor/RO_FATOR_AR_LIMPO; //o valor lido dividido pelo R0 do ar limpo resulta no R0 do ambiente
-//	return valor; 
-//}
-//float leitura_MQ2(int mq_pin)
-//{
-//	int i;
-//	float rs=0;
-//	pisca_led(LED_VERDE,false);
-//	for (i=0;i<ITERACOES_LEITURA;i++) {
-//		rs += calcularResistencia(analogRead(mq_pin));
-//		digitalWrite(LED_AZUL, !digitalRead(LED_AZUL));//Faz o LED piscar (inverte o estado).
-//		delay(10);
-//	}
-//	digitalWrite(LED_AZUL,false);
-//	rs = rs/ITERACOES_LEITURA;
-//	return rs;  
-//}
-//int getQuantidadeGasMQ(float rs_ro, int gas_id)
-//{
-//	if ( gas_id == 0 ) {
-//		return calculaGasPPM(rs_ro,LPGCurve);
-//	} else if ( gas_id == 1 ) {
-//		return calculaGasPPM(rs_ro,COCurve);
-//	} else if ( gas_id == 2 ) {
-//		return calculaGasPPM(rs_ro,SmokeCurve);
-//	}    
-//
-//	return 0;
-//}
-//int  calculaGasPPM(float rs_ro, float *pcurve) //Rs/R0 Ã© fornecido para calcular a concentracao em PPM do gas em questao. O calculo eh em potencia de 10 para sair da logaritmica
-//{
-//	return (pow(10,( ((log(rs_ro)-pcurve[1])/pcurve[2]) + pcurve[0])));
-//}
-////---------------------------------------  
-//
 //---------------------------------------
 //    FUNÃ‡ÃƒO DE MANIPULAÃ‡ÃƒO DE ARQUIVOS  
 //---------------------------------------  
@@ -314,96 +280,3 @@ void openFS(){
 		////gravaLog(" "+hora_ntp + " - Sistema de arquivos aberto com sucesso!", logtxt, 4);
 	}
 }
-//---------------------------------------  
-//
-////callback que indica que o ESP entrou no modo AP
-//void configModeCallback (WiFiManager *myWiFiManager) {  
-//	//  Serial.println("Entered config mode");
-//	Serial.println(" Entrou no modo de configuraÃ§Ã£o ");
-//	Serial.println(WiFi.softAPIP()); //imprime o IP do AP
-//	Serial.println(myWiFiManager->getConfigPortalSSID()); //imprime o SSID criado da rede
-//
-//}
-//
-////callback que indica que salvamos uma nova rede para se conectar (modo estaÃ§Ã£o)
-//void saveConfigCallback () {
-//	//  Serial.println("Should save config");
-//	Serial.println(" ConfiguraÃ§Ã£o salva ");
-//	Serial.println(WiFi.softAPIP()); //imprime o IP do AP
-//}
-//
-//void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
-//	Serial.printf("Listando DiretÃ³rios: %s\r\n", dirname);
-//
-//	File root = fs.open(dirname);
-//	if(!root){
-//		Serial.println("- Falha ao abrir diretÃ³rio");
-//		return;
-//	}
-//	if(!root.isDirectory()){
-//		Serial.println(" - DiretÃ³rio nÃ£o encontrado");
-//		return;
-//	}
-//
-//	File file = root.openNextFile();
-//	while(file){
-//		if(file.isDirectory()){
-//			Serial.print("  DIR : ");
-//			Serial.println(file.name());
-//			if(levels){
-//				listDir(fs, file.name(), levels -1);
-//			}
-//		} else {
-//			Serial.print("  Arquivo: ");
-//			Serial.print(file.name());
-//			Serial.print("\tTamanho: ");
-//			Serial.println(file.size());
-//		}
-//		file = root.openNextFile();
-//	}
-//}
-//void print_reset_reason(RESET_REASON reason)
-//{
-//  switch ( reason)
-//  {
-//    case 1 : Serial.println ("POWERON_RESET");break;          /**<1,  Vbat power on reset*/
-//    case 3 : Serial.println ("SW_RESET");break;               /**<3,  Software reset digital core*/
-//    case 4 : Serial.println ("OWDT_RESET");break;             /**<4,  Legacy watch dog reset digital core*/
-//    case 5 : Serial.println ("DEEPSLEEP_RESET");break;        /**<5,  Deep Sleep reset digital core*/
-//    case 6 : Serial.println ("SDIO_RESET");break;             /**<6,  Reset by SLC module, reset digital core*/
-//    case 7 : Serial.println ("TG0WDT_SYS_RESET");break;       /**<7,  Timer Group0 Watch dog reset digital core*/
-//    case 8 : Serial.println ("TG1WDT_SYS_RESET");break;       /**<8,  Timer Group1 Watch dog reset digital core*/
-//    case 9 : Serial.println ("RTCWDT_SYS_RESET");break;       /**<9,  RTC Watch dog Reset digital core*/
-//    case 10 : Serial.println ("INTRUSION_RESET");break;       /**<10, Instrusion tested to reset CPU*/
-//    case 11 : Serial.println ("TGWDT_CPU_RESET");break;       /**<11, Time Group reset CPU*/
-//    case 12 : Serial.println ("SW_CPU_RESET");break;          /**<12, Software reset CPU*/
-//    case 13 : Serial.println ("RTCWDT_CPU_RESET");break;      /**<13, RTC Watch dog Reset CPU*/
-//    case 14 : Serial.println ("EXT_CPU_RESET");break;         /**<14, for APP CPU, reseted by PRO CPU*/
-//    case 15 : Serial.println ("RTCWDT_BROWN_OUT_RESET");break;/**<15, Reset when the vdd voltage is not stable*/
-//    case 16 : Serial.println ("RTCWDT_RTC_RESET");break;      /**<16, RTC Watch dog reset digital core and rtc module*/
-//    default : Serial.println ("NO_MEAN");
-//  }
-//}
-//
-//void verbose_print_reset_reason(RESET_REASON reason)
-//{
-//  switch ( reason)
-//  {
-//    case 1  : Serial.println ("Vbat power on reset");break;
-//    case 3  : Serial.println ("Software reset digital core");break;
-//    case 4  : Serial.println ("Legacy watch dog reset digital core");break;
-//    case 5  : Serial.println ("Deep Sleep reset digital core");break;
-//    case 6  : Serial.println ("Reset by SLC module, reset digital core");break;
-//    case 7  : Serial.println ("Timer Group0 Watch dog reset digital core");break;
-//    case 8  : Serial.println ("Timer Group1 Watch dog reset digital core");break;
-//    case 9  : Serial.println ("RTC Watch dog Reset digital core");break;
-//    case 10 : Serial.println ("Instrusion tested to reset CPU");break;
-//    case 11 : Serial.println ("Time Group reset CPU");break;
-//    case 12 : Serial.println ("Software reset CPU");break;
-//    case 13 : Serial.println ("RTC Watch dog Reset CPU");break;
-//    case 14 : Serial.println ("for APP CPU, reseted by PRO CPU");break;
-//    case 15 : Serial.println ("Reset when the vdd voltage is not stable");break;
-//    case 16 : Serial.println ("RTC Watch dog reset digital core and rtc module");break;
-//    default : Serial.println ("NO_MEAN");
-//  }
-//}
